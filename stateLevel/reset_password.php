@@ -1,7 +1,61 @@
+<?php
+include("../connect.php");
+session_start();
+if(!isset($_SESSION['St_user_id']))
+{
+	header("location:../login.php");
+}
+$msg=" ";
+if(isset($_POST['reset']))
+{
+	$u_id = $_POST['user_id'];
+	function find($table_name , $password , $user_id , $u_id){
+		$link = mysqli_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_DATABASE);
+		$sql="UPDATE $table_name SET $password = 'sird@1234' WHERE $user_id = '$u_id'";
+		$run = mysqli_query($link,$sql);
+		if($run)
+		{
+			echo "<script>alert('Password Reset Succesful');</script>";
+			echo "<script>window.open('state_index.html','_self')</script>";
+		}else{
+			echo "<script>alert('Password Reset Failed!!');</script>";
+
+		}
+
+	}
+
+	$district = "SELECT `District_user_id` , `District_password` FROM `districts` WHERE `District_user_id` = '$u_id'";
+	$taluk = "SELECT `Taluk_password`, `Taluk_user_id` FROM `taluk` WHERE `Taluk_user_id`='$u_id'";
+	$panchayat = "SELECT `Panchayat_user_id` , `Panchayat_password` FROM `panchayat` WHERE `Panchayat_user_id` = '$u_id'";
+
+	$run_district = mysqli_query($link,$district);
+	$run_taluk = mysqli_query($link,$taluk);
+	$run_panchayat = mysqli_query($link,$panchayat);
+				
+	$rows_district = mysqli_num_rows($run_district);
+	$rows_taluk = mysqli_num_rows($run_taluk);
+	$rows_panchayat = mysqli_num_rows($run_panchayat);
+
+	if($rows_district)
+	{
+		find('disticts','District_password', 'District_user_id',$u_id);
+	}else if($rows_taluk)
+	{
+		find('taluk','Taluk_password', 'Taluk_user_id', $u_id);
+	}else if($rows_panchayat)
+	{
+		find('panchayat','Panchayat_password', 'Panchayat_user_id' , $u_id);
+	}else{
+		$msg = "Invalid User ID";
+	}
+
+	
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Login</title>
+	<title>Reset Password</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
@@ -21,7 +75,7 @@
 	<link rel="stylesheet" type="text/css" href="../css/main.css">
 <!--===============================================================================================-->
 </head>
-<body>
+<body> 
 	
 	<div class="limiter">
 		<div class="container-login100">
@@ -30,40 +84,29 @@
 					<img src="../images/pp-1.jpg" alt="IMG">
 				</div>
 
-				<div class="login100-form validate-form">
-					
-
-					
-					
-					<div class="container-login100-form-btn">
-						<button class="login100-form-btn" >
-						<a href="../reportForm.php">Report Event </a>	
-						</button>
+				<form class="login100-form validate-form" method="post" onSubmit="return confirm('Confirm user password reset');">
+					<span class="login100-form-title">
+						Reset Password
+					</span>
+					<?php echo $msg ?>
+					<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+						<input class="input100" type="text" name="user_id" placeholder="User ID">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-envelope" aria-hidden="true"></i>
+						</span>
 					</div>
-                    <div class="container-login100-form-btn">
-						<button class="login100-form-btn" >
-						<a href="view_event.php">View Events </a>	
-						</button>
-					</div>
-					<div class="container-login100-form-btn">
-						<button class="login100-form-btn" >
-						<a href="reset_password.php">Reset Password </a>	
-						</button>
-					</div>
-					<div class="container-login100-form-btn">
-						<button class="login100-form-btn" >
-						<a href="../view_reported_events.php">View Reported Events </a>	
-						</button>
-					</div>
-									
-				</div>
-
-			</div>
 			
-		</div>
-		<div class="text-center p-t-136">
-			<a class="txt2" href="#">
-			</a>
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn" name="reset">Reset</button>
+					</div>
+					
+					<div class="text-center p-t-136">
+						<a class="txt2" href="#">
+						</a>
+					</div>
+				</form>
+			</div>
 		</div>
 	</div>
 	
@@ -74,7 +117,6 @@
 	<script src="../vendor/jquery/jquery-3.2.1.min.js"></script>
 <!--===============================================================================================-->
 	<script src="../vendor/bootstrap/js/popper.js"></script>
-	<script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 <!--===============================================================================================-->
 	<script src="../vendor/select2/select2.min.js"></script>
 <!--===============================================================================================-->
@@ -85,6 +127,7 @@
 		})
 	</script>
 <!--===============================================================================================-->
+	<script src="../js/main.js"></script>
 
 </body>
 </html>

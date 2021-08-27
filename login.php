@@ -1,76 +1,107 @@
 <?php
 include ("connect.php");
-session_start();
+$echo=" ";
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"]==true){
-    header("location:login.php");
+	session_destroy();
+	header("location:login.php");
     exit;
+}
+function session_login($db_user_id,$user_id)
+{
+	session_start();
+	$_SESSION["loggedin"]=true;
+	$_SESSION[$db_user_id]=$user_id;
+
+	echo '<script>';
+  	echo 'console.log('. json_encode( $db_user_id ) .')';
+  	echo '</script>';
+	// echo "<script>console.log('db user in session login ='.$db_user_id.' user id in session login'.$user_id')</script>;
+
 }
 if(isset($_POST['login']) && ($_SERVER["REQUEST_METHOD"] == "POST")){
     
     $user_id = $_POST["user_id"];
-    $pass = $_POST["pass"];
+	$pass=$_POST["pass"];
     
 	if($user_id == 'admin')
 	{
-		$sql = "select St_user_id,St_password from state where St_user_id='$user_id' AND St_password='$pass' ";
+		$sql = "select St_user_id,St_password from state where St_user_id='$user_id' ";
 		$result=mysqli_query($link,$sql);
+		$row = mysqli_fetch_array($result);
 		if(mysqli_num_rows($result)==1)
 		{
-			session_start();
-			$_SESSION["loggedin"]=true;
-			$_SESSION['St_user_id']=$user_id;
-			
-			if($pass == 'sird@1234')
+			$hash = $row['St_password'];
+			if(password_verify($pass,$hash))
 			{
+				// session_start();
+				// $_SESSION["loggedin"]=true;
+				// $_SESSION['St_user_id']=$user_id;
+				session_login('St_user_id',$user_id);
+				header("location:stateLevel/state_index.html");
+				
+			}else if($pass == 'sird@1234' && $row['St_password'] == $pass)
+			{
+				// session_start();
+				// $_SESSION["loggedin"]=true;
+				// $_SESSION['St_user_id']=$user_id;
+				session_login('St_user_id',$user_id);
 				echo "<script>window.open('change_pwd.php','_self')</script>";
 			}else{
-				header("location:stateLevel/state_index.html");
-			}
-		}else{
 			echo "<script>alert('Your User ID or password is incorrect.')</script>";
+			}
 		}
+	}else
+	{
 
-	}else{
 
-
-		$district = "SELECT `District_user_id` , `District_password` FROM `districts` WHERE `District_user_id` = '$user_id' AND `District_password`='$pass' ";
-		$taluk = "SELECT `Taluk_password`, `Taluk_user_id` FROM `taluk` WHERE `Taluk_password`='$pass' AND `Taluk_user_id`='$user_id'";
-		$panchayat = "SELECT `Panchayat_user_id` , `Panchayat_password` FROM `panchayat` WHERE `Panchayat_user_id` = '$user_id' AND `Panchayat_password`='$pass' ";
+		$district = "SELECT `District_user_id` , `District_password` FROM `districts` WHERE `District_user_id` = '$user_id'";
+		$taluk = "SELECT `Taluk_password`, `Taluk_user_id` FROM `taluk` WHERE `Taluk_user_id`='$user_id'";
+		$panchayat = "SELECT `Panchayat_user_id` , `Panchayat_password` FROM `panchayat` WHERE `Panchayat_user_id` = '$user_id'";
 
 		$run_district = mysqli_query($link,$district);
 		$run_taluk = mysqli_query($link,$taluk);
 		$run_panchayat = mysqli_query($link,$panchayat);
-		
-		
+				
 		$rows_district = mysqli_num_rows($run_district);
 		$rows_taluk = mysqli_num_rows($run_taluk);
 		$rows_panchayat = mysqli_num_rows($run_panchayat);
 
-		if($rows_district || $rows_taluk || $rows_panchayat)
+		function hash_pass($db_user_id , $user_id , $rows_type , $pass , $hash)
 		{
 			if($pass == 'sird@1234')
 			{
-				if($rows_district)
+				if($rows_type)
 				{
-					session_start();
-					$_SESSION["loggedin"]=true;
-					$_SESSION['District_user_id']=$user_id;
-				}else if($rows_taluk)
-				{
-					session_start();
-					$_SESSION["loggedin"]=true;
-					$_SESSION['Taluk_user_id']=$user_id;
-				}else if($rows_panchayat)
-				{
-					session_start();
-					$_SESSION["loggedin"]=true;
-					$_SESSION['Panchayat_user_id']=$user_id;
+					session_login($db_user_id,$user_id);
 				}
 				echo "<script>window.open('change_pwd.php','_self')</script>";
-			}else{
-				echo "<script>window.open('reportForm.php','_self')</script>";
+			}else if(password_verify($pass,$hash)){
+				if($rows_type)
+				{
+					session_login($db_user_id,$user_id);
+				}
+				echo "<script>window.open('user_index.html','_self')</script>";
 			}
-		}else{
+		}
+
+		if($rows_district)
+		{
+			$row_district = mysqli_fetch_array($run_district);
+			$hash= $row_district['District_password'];
+			hash_pass('District_user_id', $user_id , '$rows_district' , $pass , $hash);
+		}else if($rows_taluk)
+		{
+			$row_taluk = mysqli_fetch_array($run_taluk);
+			$hash= $row_taluk['Taluk_password'];
+			hash_pass('Taluk_user_id', $user_id , '$rows_taluk' , $pass , $hash);
+		}else if($rows_panchayat)
+		{
+			$row_panchayat = mysqli_fetch_array($run_panchayat);
+			$hash= $row_panchayat['Panchayat_password'];
+			hash_pass('Panchayat_user_id', $user_id , '$rows_panchayat' , $pass , $hash);
+		}
+
+		else{
 			echo "<script>alert('Your User ID or password is incorrect.')</script>";
 			echo "<script>window.open('login.php','_self')</script>";
 		}
@@ -102,7 +133,7 @@ if(isset($_POST['login']) && ($_SERVER["REQUEST_METHOD"] == "POST")){
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 <!--===============================================================================================-->
 </head>
-<body>
+<body> 
 	
 	<div class="limiter">
 		<div class="container-login100">
@@ -115,7 +146,6 @@ if(isset($_POST['login']) && ($_SERVER["REQUEST_METHOD"] == "POST")){
 					<span class="login100-form-title">
 						Login
 					</span>
-
 					<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
 						<input class="input100" type="text" name="user_id" placeholder="User ID">
 						<span class="focus-input100"></span>

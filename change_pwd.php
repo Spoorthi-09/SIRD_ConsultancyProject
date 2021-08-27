@@ -45,17 +45,18 @@
 			else 
 			{
 				$msg = "Your password is strong.";
-
+				$new_pass = password_hash($newpass, PASSWORD_DEFAULT);
 				switch($choice)
 				{
-					case 'admin': $sql="UPDATE `state` SET `St_password`='$newpass' WHERE `St_user_id`='$user_session'";
+					case 'admin': $sql="UPDATE `state` SET `St_password`='$new_pass' WHERE `St_user_id`='$user_session'";
 								break;
-					case 'district': $sql="UPDATE `districts` SET `District_password`='$newpass' WHERE `District_user_id`='$user_session'";
+					case 'district': $sql="UPDATE `districts` SET `District_password`='$new_pass' WHERE `District_user_id`='$user_session'";
 								break;
-					case 'taluk': $sql="UPDATE `taluk` SET `Taluk_password`='$newpass' WHERE `Taluk_user_id`='$user_session'";
+					case 'taluk': $sql="UPDATE `taluk` SET `Taluk_password`='$new_pass' WHERE `Taluk_user_id`='$user_session'";
 								break;
-					case 'panchayat': $sql="UPDATE `panchayat` SET `Panchayat_password`='$newpass' WHERE `Panchayat_user_id`='$user_session'";
+					case 'panchayat': $sql="UPDATE `panchayat` SET `Panchayat_password`='$new_pass' WHERE `Panchayat_user_id`='$user_session'";
 								break;
+					default : echo "User ID invalid";
 				}
 				
 				$result=mysqli_query($link,$sql);
@@ -122,11 +123,11 @@
                     <input class="input100" type="password" name="newpass" placeholder="New Password" id="password" >
                        
                          
-                        <span class="focus-input100"></span>
+                        <!-- <span class="focus-input100"></span>
 						<span class="symbol-input100">
                             <i class="fa fa-lock" aria-hidden="true"></i>
                             <i class="bi bi-eye-slash" id="togglePassword" style="margin-left:220px; cursor:pointer ;pointer-event : auto;"></i>
-						</span>
+						</span> -->
 
 					</div>
 

@@ -1,9 +1,18 @@
+<?php
+include("../connect.php");
+// session_start();
+// if(!(isset($_SESSION['admin'])))
+// {
+//   header("location:../login.php");
+
+// }
+?>
 <!DOCTYPE html>
 <html>
   <head>
     <title>Workplace Complaint Form</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"> -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   <!--===============================================================================================-->	
@@ -25,55 +34,87 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css" />
     <link rel="canonical" href="https://getbootstrap.com/docs/3.4/examples/starter-template/">
+    <link rel="stylesheet" type="text/css" href="../css/main_table.css">
+
   <!--===============================================================================================-->
   </head>
   <body>
     <div class="limiter">
       <div class="container-login100">
-        <!-- <div class="wrap-login100"> -->
-        <span class="login100-form-title">
-                -> List of Events <-
-              </span>
-            <div class = "container">
-        <div class="row">
-            <form action="" method="POST">
-                            <div class="col-md-2">
-                            <select name="state" data-live-search="true" id="state" class="form-control" title="Select state body">
-                                <option value="all">All</option>
-                                <?php
-                                    if($num > 0){
-                                        while($row = mysqli_fetch_array($run)){
-                                ?>
-                                            <option value="<?php echo $row['St_id'];?>"><?php echo $row['St_name'] ?></option>
-                                <?php
-                                        }
-                                        }
-                                ?>
-                            </select>
-                            </div>
-                            <div class="col-md-2">
-                                <select name="district" data-live-search="true" id="district" class="form-control" title="Select district"> </select>
-                            </div>
-                            <div class="col-md-2">
-                                <select name="taluk" data-live-search="true" id="taluk" class="form-control" title="Select taluk"> </select>
-                            </div>
-                            <div class="col-md-2">
-                                <select name="panchayat" data-live-search="true" id="panchayat" class="form-control" title="Select panchayat"> </select>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="button" value="APPLY">
-                            </div>
-                        </form>
-                        
-         <!-- </div> -->
-        </div>
-        </div>
-        <div class="wrap-login100">
-      </div>
-      
-      </div>
+        <span class="login100-form-title">-> List of Events <-</span>
+        <div class = "container">
+          <form method="POST" action='view_event.php'>
+            <div class="row">
 
-    </div> 
+              <div class="col-md-2">
+                <div name="state" id="state" class="form-control" title="State">State </div>
+              </div>
+              <div class="col-md-2">
+                  <select name="district" value =NULL data-live-search="true" id="district" class="form-control" title="Select district"> </select>
+              </div>
+              <div class="col-md-2">
+                <select name="taluk" value=NULL data-live-search="true" id="taluk" class="form-control" title="Select taluk"> </select>
+              </div>
+              <div class="col-md-2">
+                  <select name="panchayat" value=NULL data-live-search="true" id="panchayat" class="form-control" title="Select panchayat"> </select>
+              </div>
+              <div class="col-md-4">
+                  <button name='apply'>APPLY</button>
+              </div>
+
+            </div>
+          </form>
+                        
+        <table>
+						<thead>
+							<tr class="table100-head">
+								<th class="column1">Date of reporting</th>
+								<th class="column2">Date of Event</th>
+								<th class="column3">Event Name</th>
+								<th class="column4">Event Theme</th>
+								<th class="column5">Update</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
+              if(isset($_POST['apply']))
+              {
+                if($_POST['district']==NULL && $_POST['taluk']==NULL && $_POST['panchayat']==NULL)
+                {
+                  $sql = "SELECT * FROM `event` WHERE `User_id`='admin' ORDER BY ";
+                }else if($_POST['district']!=NULL && $_POST['taluk']==NULL && $_POST['panchayat']==NULL)
+                {
+                  $sql = 'SELECT * FROM `district` INNER JOIN `event` ON `District_user_id`=`User_id` ';
+                }
+                  $run = mysqli_query($link,$sql);
+                  while($rows = mysqli_fetch_array($run))
+                  {
+                    $event_id = $rows['Event_id'];
+                    $rep_date = $rows['reporting_date'];
+                    $event_date = $rows['Event_date'];
+                    $event_name = $rows['Event_name'];
+                    $event_theme = $rows['Event_theme'];
+                    $event_pic = $rows['pic1'];
+                    
+                    echo "<tr>
+                    <td class='column1'>$rep_date</td>
+                    <td class='column2'>$event_date</td>
+                    <td class='column3'>$event_name</td>
+                    <td class='column4'>$event_theme</td>
+                    <td class='column5'>$event_pic</td>
+
+
+                    </tr>";
+                  }
+              }
+					
+							?>						
+						</tbody>
+					</table>
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
@@ -125,6 +166,8 @@
                 })
 
             });
-    </script>     
+    </script> 
+    
+ 
   </body>
 </html>
