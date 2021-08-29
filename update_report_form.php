@@ -36,6 +36,7 @@ if(!(isset($_SESSION['St_user_id']) || isset($_SESSION['District_user_id']) || i
   </head>
   <body>
     <div class="limiter">
+    <?php include 'header/header.php' ?>
       <div class="container-login100">
         <div class="wrap-login100">
           <?php

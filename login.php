@@ -1,22 +1,32 @@
 <?php
+// Initialize the session.
+// If you are using session_name("something"), don't forget it now!
+session_start();
+
+// Unset all of the session variables.
+$_SESSION = array();
+
+// If it's desired to kill the session, also delete the session cookie.
+// Note: This will destroy the session, and not just the session data!
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+}
+
+// Finally, destroy the session.
+session_destroy();
+?>
+<?php
 include ("connect.php");
 $echo=" ";
-if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"]==true){
-	session_destroy();
-	header("location:login.php");
-    exit;
-}
 function session_login($db_user_id,$user_id)
 {
 	session_start();
 	$_SESSION["loggedin"]=true;
 	$_SESSION[$db_user_id]=$user_id;
-
-	echo '<script>';
-  	echo 'console.log('. json_encode( $db_user_id ) .')';
-  	echo '</script>';
-	// echo "<script>console.log('db user in session login ='.$db_user_id.' user id in session login'.$user_id')</script>;
-
 }
 if(isset($_POST['login']) && ($_SERVER["REQUEST_METHOD"] == "POST")){
     
@@ -33,17 +43,11 @@ if(isset($_POST['login']) && ($_SERVER["REQUEST_METHOD"] == "POST")){
 			$hash = $row['St_password'];
 			if(password_verify($pass,$hash))
 			{
-				// session_start();
-				// $_SESSION["loggedin"]=true;
-				// $_SESSION['St_user_id']=$user_id;
 				session_login('St_user_id',$user_id);
 				header("location:stateLevel/state_index.html");
 				
 			}else if($pass == 'sird@1234' && $row['St_password'] == $pass)
 			{
-				// session_start();
-				// $_SESSION["loggedin"]=true;
-				// $_SESSION['St_user_id']=$user_id;
 				session_login('St_user_id',$user_id);
 				echo "<script>window.open('change_pwd.php','_self')</script>";
 			}else{
@@ -138,8 +142,13 @@ if(isset($_POST['login']) && ($_SERVER["REQUEST_METHOD"] == "POST")){
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100">
+				<div id="logo"> 
+					<img src="images/lion_resize.png" >
+					<span id="karnataka">ಕರ್ನಾಟಕ ಸರ್ಕಾರ</span>
+				</div>
 				<div class="login100-pic js-tilt" data-tilt>
-					<img src="images/pp-1.jpg" alt="IMG">
+					<img src="images/house.jpeg" alt="IMG">
+					<div id="login_logo_text">ಅಬ್ದುಲ್ ನಜೀರ್ ಸಾಬ್ <br>ರಾಜ್ಯ ಗ್ರಾಮೀಣಾಭಿೃದ್ಧಿ ಮತ್ತು ಪಂಚಾಯತ್ ರಾಜ್ ಸಂಸ್ತೆ</div>
 				</div>
 
 				<form class="login100-form validate-form" method="post">

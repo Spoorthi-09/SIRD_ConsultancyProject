@@ -1,18 +1,18 @@
 <?php
 include("../connect.php");
-// session_start();
-// if(!(isset($_SESSION['admin'])))
-// {
-//   header("location:../login.php");
+session_start();
+if(!(isset($_SESSION['St_user_id'])))
+{
+  header("location:../login.php");
 
-// }
+}
+$user_session = $_SESSION['St_user_id'];
 ?>
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Workplace Complaint Form</title>
+    <title>View Events</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"> -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   <!--===============================================================================================-->	
@@ -40,6 +40,7 @@ include("../connect.php");
   </head>
   <body>
     <div class="limiter">
+    <?php include '../header/header.php' ?>
       <div class="container-login100">
         <span class="login100-form-title">-> List of Events <-</span>
         <div class = "container">
@@ -59,7 +60,7 @@ include("../connect.php");
                   <select name="panchayat" value=NULL data-live-search="true" id="panchayat" class="form-control" title="Select panchayat"> </select>
               </div>
               <div class="col-md-4">
-                  <button name='apply'>APPLY</button>
+						      <button class="login100-form-btn" name="apply">APPLY</button>
               </div>
 
             </div>
@@ -72,7 +73,7 @@ include("../connect.php");
 								<th class="column2">Date of Event</th>
 								<th class="column3">Event Name</th>
 								<th class="column4">Event Theme</th>
-								<th class="column5">Update</th>
+								<th class="column5">Image</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -81,10 +82,26 @@ include("../connect.php");
               {
                 if($_POST['district']==NULL && $_POST['taluk']==NULL && $_POST['panchayat']==NULL)
                 {
-                  $sql = "SELECT * FROM `event` WHERE `User_id`='admin' ORDER BY ";
+                  $sql = "SELECT * FROM `event` WHERE `User_id`='admin' ORDER BY `Event_date` LIMIT 20";
                 }else if($_POST['district']!=NULL && $_POST['taluk']==NULL && $_POST['panchayat']==NULL)
                 {
-                  $sql = 'SELECT * FROM `district` INNER JOIN `event` ON `District_user_id`=`User_id` ';
+                  $post_district = $_POST['district'];
+                  $sql = "SELECT * FROM `districts` INNER JOIN `event` ON `District_user_id`=`User_id` WHERE `District_id`='$post_district'";
+                }else if($_POST['district']!=NULL && $_POST['taluk']!=NULL && $_POST['panchayat']==NULL)
+                {
+                  $post_district = $_POST['district'];
+                  $post_taluk = $_POST['taluk'];
+                  $sql = "SELECT * FROM `taluk` INNER JOIN `event` ON `Taluk_user_id`=`User_id` WHERE `District_id`='$post_district' AND `Taluk_id`='$post_taluk'";
+                }else if($_POST['district']!=NULL && $_POST['taluk']!=NULL && $_POST['panchayat']!=NULL)
+                {
+                  $post_district = $_POST['district'];
+                  $post_taluk = $_POST['taluk'];
+                  $post_panchayat = $_POST['panchayat'];
+                  $sql = "SELECT * FROM `panchayat` INNER JOIN `event` ON `Panchayat_user_id`=`User_id` WHERE `District_id`='$post_district' AND `Taluk_id`='$post_taluk' AND `Panchayat_id`='$post_panchayat'";
+                }else{
+                  echo "<script>alert('Please select the district')</script>";
+                  echo "<script>window.open('view_event.php','_self')</script>";
+
                 }
                   $run = mysqli_query($link,$sql);
                   while($rows = mysqli_fetch_array($run))
@@ -101,10 +118,11 @@ include("../connect.php");
                     <td class='column2'>$event_date</td>
                     <td class='column3'>$event_name</td>
                     <td class='column4'>$event_theme</td>
-                    <td class='column5'>$event_pic</td>
+                    <td class='column5'><a href='../reportImages/$event_pic' target='_blank'><img id='myImg' src='../reportImages/$event_pic' alt='No img' style='width:200%;max-width:300px;padding:3px'></a></td>
+                    </tr>
 
-
-                    </tr>";
+                    ";
+                    
                   }
               }
 					
@@ -166,8 +184,7 @@ include("../connect.php");
                 })
 
             });
-    </script> 
-    
+</script>
  
   </body>
 </html>

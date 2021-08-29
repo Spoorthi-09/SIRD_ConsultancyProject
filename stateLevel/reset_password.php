@@ -78,6 +78,7 @@ if(isset($_POST['reset']))
 <body> 
 	
 	<div class="limiter">
+	<?php include '../header/header.php' ?>
 		<div class="container-login100">
 			<div class="wrap-login100">
 				<div class="login100-pic js-tilt" data-tilt>

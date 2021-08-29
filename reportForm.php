@@ -5,10 +5,11 @@ $check = " ";
 if(!(isset($_SESSION['St_user_id']) || isset($_SESSION['District_user_id']) || isset($_SESSION['Taluk_user_id']) || isset($_SESSION['Panchayat_user_id'])))
 	{
 		header("location:login.php");
+
 	}
-  $user_session="";
   if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"]==true)
     {
+    
         if(isset($_SESSION['St_user_id']))
         {    
             $user_session = $_SESSION['St_user_id'];
@@ -116,6 +117,7 @@ if(!(isset($_SESSION['St_user_id']) || isset($_SESSION['District_user_id']) || i
   </head>
   <body>
     <div class="limiter">
+      <?php include 'header/header.php' ?>
       <div class="container-login100">
         <div class="wrap-login100">
             <form method="post" enctype = "multipart/form-data">

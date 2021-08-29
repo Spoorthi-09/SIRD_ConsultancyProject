@@ -54,6 +54,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"]==true)
 <body>
 	
 	<div class="limiter">
+	<?php include 'header/header.php' ?>
 		<div class="container-table100">
 			<div class="wrap-table100">
 				<div class="table100">
