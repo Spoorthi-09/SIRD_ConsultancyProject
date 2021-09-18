@@ -109,26 +109,23 @@
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100">
+				
 				<div class="login100-pic js-tilt" data-tilt>
-					<img src="images/pp-1.jpg" alt="IMG">
+					<img src="images/house.jpeg" alt="IMG">
+					<div id="login_logo_text">ಅಬ್ದುಲ್ ನಜೀರ್ ಸಾಬ್ <br>ರಾಜ್ಯ ಗ್ರಾಮೀಣಾಭಿೃದ್ಧಿ ಮತ್ತು ಪಂಚಾಯತ್ ರಾಜ್ ಸಂಸ್ತೆ</div>
 				</div>
 
 				<form class="login100-form validate-form" method="POST">
 					<span class="login100-form-title">
 						Change Password
-                        user is <?php echo $user_session;?>
 					</span>
 
 					<div class="wrap-input100 validate-input" data-validate = "Password is required">
-                    <input class="input100" type="password" name="newpass" placeholder="New Password" id="password" >
-                       
-                         
-                        <!-- <span class="focus-input100"></span>
+                    <input class="input100" type="password" name="newpass" placeholder="New Password" id="password">
+					<span class="focus-input100"></span>
 						<span class="symbol-input100">
-                            <i class="fa fa-lock" aria-hidden="true"></i>
-                            <i class="bi bi-eye-slash" id="togglePassword" style="margin-left:220px; cursor:pointer ;pointer-event : auto;"></i>
-						</span> -->
-
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>                        
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate = "Password is required">
@@ -144,7 +141,6 @@
 					<div class="container-login100-form-btn">
 						<button class="login100-form-btn" name = "passwordChange">Submit</button>
 					</div>
-					<button><a href="logout.php">Logout</a></button>
 					<div class="text-center p-t-136">
 						<a class="txt2" href="#">							
 						</a>

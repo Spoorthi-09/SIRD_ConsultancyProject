@@ -70,7 +70,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"]==true)
 						</thead>
 						<tbody>
 							<?php
-								$sql = "SELECT * FROM `event` WHERE `User_id`='$user_session'";
+								$sql = "SELECT * FROM `event` WHERE `User_id`='$user_session' ORDER BY `Event_date` DESC";
 								$run = mysqli_query($link,$sql);
 								while($rows = mysqli_fetch_array($run))
 								{

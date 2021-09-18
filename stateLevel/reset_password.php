@@ -15,7 +15,7 @@ if(isset($_POST['reset']))
 		$run = mysqli_query($link,$sql);
 		if($run)
 		{
-			echo "<script>alert('Password Reset Succesful');</script>";
+			echo "<script>alert('Password Reset Successful');</script>";
 			echo "<script>window.open('state_index.html','_self')</script>";
 		}else{
 			echo "<script>alert('Password Reset Failed!!');</script>";
@@ -38,7 +38,7 @@ if(isset($_POST['reset']))
 
 	if($rows_district)
 	{
-		find('disticts','District_password', 'District_user_id',$u_id);
+		find('districts','District_password', 'District_user_id',$u_id);
 	}else if($rows_taluk)
 	{
 		find('taluk','Taluk_password', 'Taluk_user_id', $u_id);
@@ -82,7 +82,8 @@ if(isset($_POST['reset']))
 		<div class="container-login100">
 			<div class="wrap-login100">
 				<div class="login100-pic js-tilt" data-tilt>
-					<img src="../images/pp-1.jpg" alt="IMG">
+					<img src="../images/house.jpeg" alt="IMG">
+					<div id="login_logo_text">ಅಬ್ದುಲ್ ನಜೀರ್ ಸಾಬ್ <br>ರಾಜ್ಯ ಗ್ರಾಮೀಣಾಭಿೃದ್ಧಿ ಮತ್ತು ಪಂಚಾಯತ್ ರಾಜ್ ಸಂಸ್ತೆ</div>
 				</div>
 
 				<form class="login100-form validate-form" method="post" onSubmit="return confirm('Confirm user password reset');">

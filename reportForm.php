@@ -121,8 +121,6 @@ if(!(isset($_SESSION['St_user_id']) || isset($_SESSION['District_user_id']) || i
       <div class="container-login100">
         <div class="wrap-login100">
             <form method="post" enctype = "multipart/form-data">
-              <?php echo $user_session ?>
-              <a href = "logout.php">logout</a>
               <span class="login100-form-title">
                 Report an event
               </span>
@@ -147,7 +145,7 @@ if(!(isset($_SESSION['St_user_id']) || isset($_SESSION['District_user_id']) || i
               </div>
               <input type="file" id="actual-btn" name="upload_image" hidden/>
               <label for="actual-btn" class="login100-form-btn">Upload Image</label>
-              <span id="file-chosen">No file chosen <span style="font-size:12px">( Choose file(png/jpg/jpeg) with size less than 2MB )</span></span>
+              <span id="file-chosen">No file chosen <span style="font-size:12px">( Choose file(png/jpg/jpeg) with size less than 10MB )</span></span>
               
                 <script>
                   const actualBtn = document.getElementById('actual-btn');
